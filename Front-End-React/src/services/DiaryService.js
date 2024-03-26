@@ -11,12 +11,8 @@ class DiaryService {
         return axios.post(DIARY_BASE_REST_API_URL, diary);
     }
 
-    getDiaryById(diaryId) {
-        return axios.get(DIARY_BASE_REST_API_URL + '/' + diaryId);
-    }
-
-    updateDiary(diary) {
-        return axios.put(DIARY_BASE_REST_API_URL, diary);
+    updateDiary(diaryId, diary) {
+        return axios.put(DIARY_BASE_REST_API_URL + '/' + diaryId, diary);
     }
 
     deleteDiary(diaryId) {
@@ -25,3 +21,4 @@ class DiaryService {
 }
 
 export default new DiaryService();
+

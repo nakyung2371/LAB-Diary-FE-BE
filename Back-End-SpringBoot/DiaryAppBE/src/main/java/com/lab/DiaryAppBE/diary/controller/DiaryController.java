@@ -18,37 +18,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DiaryController {
 
-    // CRUD REST 통신 처리 블락
-    // get : 다이어리 글의 전체 리스트 정보  : /diary
-    // http://localhost:9494/diary
-
-    // get : 다이어리 글의 정보 : /api/diary/{id}
-    //http://localhost:9494/diary/1
-
-    // post : 다이어리 글을 등록 : /api/diary
-    // http://localhost:9494/diary?firstName=감찬&lastName=강&emailId=aaa@aaa.com?!??
-
-    // put : 다이어리 글를 수정 : /api/diary/{id}
-    //http://localhost:9494/diary/1?firstName=대왕&lastName=세종&emailId=bbb@bbb.com?!??
-
-    // delete : 다이어리 글를 삭제 : /diary/{id}
-    //http://localhost:9494/diary/2
-
     private final DiaryRepository diaryRepository;
     private final DiaryService diaryService;
 
     //다이어리 글 등록
-//    @PostMapping("/diary")
-//    public ResponseEntity<String> insertDiary(@RequestBody DiaryDTO diaryDTO) {
-//        System.out.println(diaryDTO.getId());
-//        System.out.println(diaryDTO.getContent());
-//        System.out.println(diaryDTO.getEmotionId());
-//        System.out.println(diaryDTO.getDate());
-//
-//        String complate = diaryService.insertDiary(diaryDTO);
-//        return new ResponseEntity<>(complate, HttpStatus.OK);
-//    }
-
     @PostMapping("/diary")
     public Diary createDiary(@RequestBody DiaryDTO diaryDTO) {
         System.out.println("diaryDTO");
@@ -66,13 +39,15 @@ public class DiaryController {
     }
 
     //다이어리 글 수정
-    @PutMapping("/diary")
-    public Diary diaryUpdate(@RequestBody Diary diary) {
-        System.out.println("diaryDTO");
-        System.out.println(diary);
-        return diaryService.modiDiary(diary);
-    }
+    @PutMapping("/diary/{id}")
+    public ResponseEntity diaryUpdate(
+            @PathVariable("id") long id,
+            @RequestBody DiaryDTO diaryDTO) {
 
+        diaryService.updateDiary(id, diaryDTO);
+
+        return ResponseEntity.ok(diaryDTO);
+    }
 
     //다이어리 글 삭제
     @DeleteMapping("/diary/{id}")
@@ -81,11 +56,4 @@ public class DiaryController {
         return new ResponseEntity<>("삭제 성공", HttpStatus.OK);
     }
 
-    //다이어리 글 상세 보기
-    @GetMapping("/diary/{id}")
-    public ResponseEntity getDetail(@PathVariable("id") long id) {
-        DiaryDTO diaryDTO = diaryService.getDiaryDetail(id);
-
-        return ResponseEntity.ok(diaryDTO);
-    }
 }

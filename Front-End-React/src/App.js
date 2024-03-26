@@ -17,31 +17,6 @@ import ImgTest from "./test/ImgTest";
 import {useReducer,  useState} from "react";
 
 
-
-
-//mockData 가짜 데이터,
-const mockData = [
-    {
-        id: 0,
-        date: new Date().getTime() - 1,
-        content: "mock1",
-        emotionId: 1
-    },
-    {
-        id: 1,
-        date: new Date().getTime() - 2,
-        content: "mock2",
-        emotionId: 2
-    },
-    {
-        id: 2,
-        date: new Date().getTime() - 3,
-        content: "mock3",
-        emotionId: 3
-    }
-
-];
-
 /* 상태 관리: context, 리덱스, 몹엑스, ...
     - context는 별도의 라이브러리 설치 없이 사용
     - SPA에서 컴포넌트 사이에 상태(변수의 값)을 전송,
@@ -80,20 +55,6 @@ function reducer(state, action) {
 
 function App() {
 
-    // const [content, setContent] = useState('')
-    // const [emotionId, setEmotionId] = useState('')
-    // const [date, setDate] = useState('')
-    // const {id} = useParams();
-    //
-    // useEffect(() => {
-    //     DiaryService.getDiaryById(id).then((response) => {
-    //         setContent(response.data.content)
-    //         setEmotionId(response.data.emotionId)
-    //         setDate(response.data.data)
-    //     }).catch(error => {
-    //         console.log(error)
-    //     })
-    // }, [])
 
     //상태를 처리하는 변수 reducer - 깔끔하게 코드 작성이 가능
     const [data, dispatch] = useReducer(reducer, []);   //state도 쓰고 reducer도 사용 가능
@@ -102,19 +63,6 @@ function App() {
 
     //useRef Hook을 사용해서 고유한 값을 생성 id 필드에 적용
     const idRef = useRef(3);
-
-    //useEffect 컴포넌트가 로드될 때 1번만 실행
-    //컴포넌트가 처음 로드될 때 dispatch를 호출해서 data에 mockData의 값을 할당
-    // useEffect( () => {
-    //     DiaryService.getAllDiary().then((res ) => {
-    //         console.log (res.data);
-    // })
-    //     dispatch({
-    //         type: "INIT",
-    //         data: mockData,
-    //     })
-    //     ,[]
-    // );
 
     useEffect(() => {
         DiaryService.getAllDiary().then((res)=>{
@@ -143,26 +91,15 @@ function App() {
             setData2(res.data)
         })
 
-        //
-        // dispatch({
-        //     type: "CREATE",
-        //     data: {
-        //         id: idRef.current++,
-        //         date: new Date(date).getTime(),
-        //         content: content,
-        //         emotionId: emotionId,
-        //     }
-        // });
     }
     const onUpdate = async (id, date, emotionId, content) => {
 
         const newData = {
-            id: id,
             date:new Date(date).getTime(),
             content: content,
             emotionId: emotionId}
 
-        await DiaryService.updateDiary(newData).then((res) => {
+        await DiaryService.updateDiary(id, newData).then((res) => {
             console.log(res)
         })
 
@@ -174,15 +111,6 @@ function App() {
             setData2(res.data)
         })
 
-        // dispatch({
-        //     type: "UPDATE",
-        //     data: {
-        //         id: id,
-        //         date: new Date(date).getTime(),  //yyyy-mm-dd 형식을 TimeStemp 형식으로 변환
-        //         emotionId: emotionId,
-        //         content: content,
-        //     }
-        // });
     }
 
     const onDelete = async (targetId) => {
@@ -190,16 +118,12 @@ function App() {
         await DiaryService.deleteDiary(targetId).then((res) => {
             console.log("data", res)
         })
-
-
-        // console.log(`하위에서 삭제 id: ${targetId}`)
-        // dispatch({
-        //     type: 'DELETE',
-        //     // targetId: targetId,      <- 풀어서 사용
-        //     targetId,                   //축약 표현
-        // } );
-
+        DiaryService.getAllDiary().then((res)=>{
+            console.log("data", res.data);
+            setData2(res.data)
+        })
     }
+
     return (
         //2. context provider를 사용해서 상태를 처리할 하위 컴포넌트를 그룹핑
         <DiaryStateContext.Provider value={data2}>

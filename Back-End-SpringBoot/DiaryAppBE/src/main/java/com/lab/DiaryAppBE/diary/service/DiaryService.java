@@ -16,21 +16,11 @@ public class DiaryService {
 
     private final DiaryRepository diaryRepository;
 
-    //다이어리 insert 메소드
-    public String insertDiary(DiaryDTO diaryDTO) {
-        Diary diary = diaryDTO.createDiary();
-        diaryRepository.save(diary);
-        return "insert 성공";
-    }
-
+    //다이어리 글 등록
     public Diary createDiary(DiaryDTO diaryDTO) {
         Diary diary = new Diary(diaryDTO);
 
         System.out.println("글 등록 성공");
-        return diaryRepository.save(diary);
-    }
-
-    public Diary modiDiary(Diary diary) {
         return diaryRepository.save(diary);
     }
 
@@ -75,23 +65,4 @@ public class DiaryService {
         diaryRepository.delete(diary);
         System.out.println("DB에서 삭제 성공");
     }
-
-    //다이어리 상세 보기
-    public DiaryDTO getDiaryDetail(long id) {
-        Optional<Diary> op = diaryRepository.findById(id);
-        Diary diary = null;
-        try {
-            diary = op.get();
-        } catch (Exception e) {
-        }
-        System.out.println("diary 객체 출력");
-        System.out.println(diary.getId());
-
-        DiaryDTO diaryDTO = new DiaryDTO();
-
-        diaryDTO = diaryDTO.of(diary);
-
-        return diaryDTO;
-    }
-
 }
